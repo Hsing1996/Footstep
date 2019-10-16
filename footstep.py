@@ -5,13 +5,14 @@ import numpy as np
 
 def nextstep(T, t, x, x1, x2, x3 ,y, y1, y2, y3):
     # T is the length of time interval
-    # t is the discrete time of each step
 
     k = T//t; # number of steps
-    
-    A = np.matrix([[1, T, T**2/2], [0, 1, T], [0, 0, 1]])
-    B = np.matrix([[T**3/6], [T**2/2], [T]])
 
+    t_list = np.empty(shape=[1,k]) # discrete time of each step
+    for i in range(k):
+        t_list[:,0] = 0
+        t_list[:,i] = t_list[:,0] + i * t
+    
     X = np.empty(shape=[3,k])
     Y = np.empty(shape=[3,k])
     #put all vectors in a matrix
@@ -22,8 +23,16 @@ def nextstep(T, t, x, x1, x2, x3 ,y, y1, y2, y3):
     # initial position info on y
 
     for i in range(k):
-        X[:,i+1] = (A * X[:,i].reshape(-1,1) + B * x3).reshape(1,-1)
-        Y[:,i+1] = (A * Y[:,i].reshape(-1,1) + B * y3).reshape(1,-1)
+
+        A = 
+        B =
+        A[i] = np.matrix([[1, t_list[i], t_list[i]**2/2], [0, 1, t_list[i]], [0, 0, 1]])
+        B[i] = np.matrix([[t_list[i]**3/6], [t_list[i]**2/2], [t_list[i]]])
+
+        X[:,i+1] = (A[i] * X[:,i].reshape(-1,1) + B[i] * x3).reshape(1,-1)
+        Y[:,i+1] = (A[i] * Y[:,i].reshape(-1,1) + B[i] * y3).reshape(1,-1)
+
+        
 
     print('Future foot step in x direction: \n ' + X, end=' ')
     print('Future foot step in y direction: \n ' + Y)
