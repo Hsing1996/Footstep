@@ -1,6 +1,7 @@
 import numpy as np
 import cvxopt
 import matplotlib.pyplot as plt
+import norm
 
 # T is the length of time interval
 # t is the discrete time of each step
