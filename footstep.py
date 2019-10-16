@@ -16,14 +16,14 @@ def nextstep(T, t, x, x1, x2, x3 ,y, y1, y2, y3):
     Y = np.empty(shape=[3,k])
     #put all vectors in a matrix
 
-    X[:,0] = np.matrix([x, x1, x2]).T 
+    X[:,0] = np.matrix([x, x1, x2])
     # initial position info on x
-    Y[:,0] = np.matrix([x, x1, x2]).T 
+    Y[:,0] = np.matrix([x, x1, x2]) 
     # initial position info on y
 
     for i in range(k):
-        X[:,i+1] = A * X[:,i] + B * x3
-        Y[:,i+1] = A * Y[:,i] + B * y3
+        X[:,i+1] = (A * X[:,i].reshape(-1,1) + B * x3).reshape(1,-1)
+        Y[:,i+1] = (A * Y[:,i].reshape(-1,1) + B * y3).reshape(1,-1)
 
     print('Future foot step in x direction: \n ' + X, end=' ')
     print('Future foot step in y direction: \n ' + Y)
