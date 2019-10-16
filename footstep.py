@@ -9,8 +9,8 @@ def nextstep(T, t, x, x1, x2, x3 ,y, y1, y2, y3):
 
     k = T//t; # number of steps
     
-    A = np.matrix('1 T T**2/2; 0 1 T; 0 0 1')
-    B = np.matrix('T**3/6; T**2/2; T')
+    A = np.matrix([[1, T, T**2/2], [0, 1, T], [0, 0, 1]])
+    B = np.matrix([[T**3/6], [T**2/2], [T]])
 
     X = np.empty(shape=[3,k])
     Y = np.empty(shape=[3,k])
