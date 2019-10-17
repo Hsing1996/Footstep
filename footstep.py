@@ -35,7 +35,6 @@ def nextstep(T, t, x, x1, x2, x3 ,y, y1, y2, y3):
             A[:,i] = [t_list[:,i]**2/2, t_list[:,i], 1]
 
         
-
         B[:,i] = [t_list[:,i]**3/6, t_list[:,i]**2/2, t_list[:,i]]
 
         X[:,i+1] = (np.stack((A[:,i], A[:,i], A[:,i]), axis = -1) * X[:,i].reshape(-1,1) + B[:,i] * x3).reshape(1,-1)
