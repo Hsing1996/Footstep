@@ -15,7 +15,7 @@ def nextstep(T, t, x, x1, x2, x3 ,y, y1, y2, y3):
     
     X = np.empty(shape=[3,k])
     Y = np.empty(shape=[3,k])
-    #put all vectors in a matrix
+    #put all position vectors in a matrix
 
     X[:,0] = np.matrix([x, x1, x2])
     # initial position info on x
@@ -23,14 +23,23 @@ def nextstep(T, t, x, x1, x2, x3 ,y, y1, y2, y3):
     # initial position info on y
 
     for i in range(k):
+    # constrct the A and B matrices
+        A = np.empty(shape=[3,3*k])
+        B = np.empty(shape=[3,k])
 
-        A = 
-        B =
-        A[i] = np.matrix([[1, t_list[i], t_list[i]**2/2], [0, 1, t_list[i]], [0, 0, 1]])
-        B[i] = np.matrix([[t_list[i]**3/6], [t_list[i]**2/2], [t_list[i]]])
+        if (i+1)%3 == 0 :
+            A[:,i] =  [1, 0, 0]
+        elif (i+1)%3 == 1 :
+            A[:,i] = [t_list[:,i], 1, 0]
+        else:
+            A[:,i] = [t_list[:,i]**2/2, t_list[:,i], 1]
 
-        X[:,i+1] = (A[i] * X[:,i].reshape(-1,1) + B[i] * x3).reshape(1,-1)
-        Y[:,i+1] = (A[i] * Y[:,i].reshape(-1,1) + B[i] * y3).reshape(1,-1)
+        
+
+        B[:,i] = [t_list[:,i]**3/6, t_list[:,i]**2/2, t_list[:,i]]
+
+        X[:,i+1] = (np.stack((A[:,i], A[:,i], A[:,i]), axis = -1) * X[:,i].reshape(-1,1) + B[:,i] * x3).reshape(1,-1)
+        Y[:,i+1] = (A[i] * Y[:,i].reshape(-1,1) + B[:,i] * y3).reshape(1,-1)
 
         
 
