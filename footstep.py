@@ -39,7 +39,7 @@ def nextstep(T, t, x, x1, x2, x3 ,y, y1, y2, y3):
 
         X[:,i+1] = (np.stack((A[:,i], A[:,i], A[:,i]), axis = -1) * X[:,i].reshape(-1,1) + B[:,i] * x3).reshape(1,-1)
         Y[:,i+1] = (A[i] * Y[:,i].reshape(-1,1) + B[:,i] * y3).reshape(1,-1)
-
+        
         
 
     print('Future foot step in x direction: \n ' + X, end=' ')
