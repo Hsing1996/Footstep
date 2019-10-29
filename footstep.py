@@ -1,48 +1,60 @@
 import numpy as np
-#import cvxopt
-#import matplotlib.pyplot as plt
-#import norm
+ 
+def nextnsteps(T, N, x, x1, x2, x3, y, y1, y2, y3):
+    # T: time interval; N: steps
 
-def nextstep(T, t, x, x1, x2, x3 ,y, y1, y2, y3):
-    # T is the length of time interval
-
-    k = T//t; # number of steps
-
-    t_list = np.empty(shape=[1,k]) # discrete time of each step
-    for i in range(k):
-        t_list[:,0] = 0
-        t_list[:,i] = t_list[:,0] + i * t
+    t_list = np.empty(shape=[1,N]) # discrete time of each step
+    for i in range(N):
+        t_list[:,i] = i * T
     
-    X = np.empty(shape=[3,k])
-    Y = np.empty(shape=[3,k])
+    X_hat = np.empty(shape=[3,N])
+    Y_hat = np.empty(shape=[3,N])
     #put all position vectors in a matrix
 
-    X[:,0] = np.matrix([x, x1, x2])
+    A = np.matrix([[1, T, T**2/2],[0, 1, T],[0, 0, 1]])     
+    B = np.matrix([T**3/6, T**2/2, T]).T
+    # constrct the A and B matrices
+    X_hat[:,0] = np.matrix([x, x1, x2])
     # initial position info on x
-    Y[:,0] = np.matrix([x, x1, x2]) 
+    Y_hat[:,0] = np.matrix([x, x1, x2])
     # initial position info on y
 
-    for i in range(k):
-    # constrct the A and B matrices
-        A = np.empty(shape=[3,3*k])
-        B = np.empty(shape=[3,k])
+    for k in range(N-1):
+        X_hat[:, k + 1] = (A * (np.asmatrix(X_hat[:,k]).T) + B * x3).T
+        Y_hat[:, k + 1] = (A * (np.asmatrix(Y_hat[:,k]).T) + B * x3).T
 
-        if (i+1)%3 == 0 :
-            A[:,i] =  [1, 0, 0]
-        elif (i+1)%3 == 1 :
-            A[:,i] = [t_list[:,i], 1, 0]
-        else:
-            A[:,i] = [t_list[:,i]**2/2, t_list[:,i], 1]
+    print('Future foot step in x direction: \n ')
+    print(X_hat)
+    print(Y_hat)
+    # test: print('Future foot step in y direction: \n ' + Y)
 
+    X = np.empty(shape=[N,1])
+    # X is the matrix of all x
+    X1 = np.empty(shape=[N,1])
+    # X1 is the matrix of all x1, aka velocity
+
+    P_ps = np.empty(shape=[N,3])
+    P_pu = np.eye(N)
+    for j in range (N):
+        P_ps[j] = np.array([1, j*T, (j**2 * T**2)/2])
+        b = np.empty(shape=[N,1])
+
+        b[j] = (1/6 + j/2 + j**2/2) * T**3
+        # entries of P_pu
         
-        B[:,i] = [t_list[:,i]**3/6, t_list[:,i]**2/2, t_list[:,i]]
-
-        X[:,i+1] = (np.stack((A[:,i], A[:,i], A[:,i]), axis = -1) * X[:,i].reshape(-1,1) + B[:,i] * x3).reshape(1,-1)
-        Y[:,i+1] = (A[i] * Y[:,i].reshape(-1,1) + B[:,i] * y3).reshape(1,-1)
+        for l in range(N):
+           if j < l:
+                P_pu[j,l] = 0
+           elif j == l:
+                P_pu[j,l] = 1
+           else:
+                for m in range(N-j):
+                    P_pu[j,j-m] = b[m]
         
-        
+    # formula (7)
 
-    print('Future foot step in x direction: \n ' + X, end=' ')
-    print('Future foot step in y direction: \n ' + Y)
-
-nextstep( T=100, t=10, x=10, x1=10, x2=10, x3=10, y=10, y1=10, y2=10, y3=10)
+    print (P_ps)
+    print ('This is P_pu')
+    print (P_pu)
+    #test
+nextnsteps(T=0.01, N=100, x=10, x1=10, x2=10, x3=10, y=10, y1=10, y2=10, y3=10)
