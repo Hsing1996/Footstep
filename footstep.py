@@ -182,7 +182,7 @@ def nextmsteps(T, N, x, x1, x2, y, y1, y2, h, g, X_fc, Y_fc, alpha, beta, gamma,
         X1_ref[i] = 0.3
         Y1_ref[i] = 0.3
 
-    for k in range(n*m): # k is in 0~15
+    for k in range(n*m+1): # k is in 0~15
         
         #initialize U_c, U
         U_c = np.zeros((N, 1))
@@ -193,17 +193,18 @@ def nextmsteps(T, N, x, x1, x2, y, y1, y2, h, g, X_fc, Y_fc, alpha, beta, gamma,
 
         if k in range(n):
             #construct U_c column 1
+            U[0:(n+k), 0] = np.zeros(n+k)
             U[(k+n*m):(n*(m+1)), 0] = np.zeros(n*(m+1)-(k+n*m))
 
             # construct U_c column 2
             U[k:(k+2*n), 1] = np.zeros(2*n)
 
-        if k in range(n,2*n):
+        if k in range(n,2*n+1):
             #construct U_c column 1
             U[(k-n):(k+n), 0] = np.zeros(2*n)
 
             # construct U_c column 2
-            U[0:(k-n), 1] = np.zeros(n)
+            U[0:(k-n), 1] = np.zeros(k-n)
             U[k:(n*(m+1)), 1] = np.zeros((m+1)*n - k)
         
         #test
